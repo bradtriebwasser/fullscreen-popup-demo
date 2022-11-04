@@ -1,0 +1,22 @@
+
+#log {
+    list-style-type: none;
+}
+#log > li {
+    border-radius: 3px;
+    padding: 4px;
+    margin: 4px;
+}
+
+#log > li.info {
+    color: black;
+    background: rgba(0, 0, 0, 0.076);
+}
+#log > li.danger {
+    color: rgb(173, 0, 0);
+    background: rgba(222, 3, 3, 0.279);
+}
+#log > li.success {
+    color: rgb(0, 173, 12);
+    background: rgba(36, 222, 3, 0.279);
+}

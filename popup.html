@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="icon" href="https://glitch.com/favicon.ico" />
+
+    <title>Hello World!</title>
+    <!-- Import the webpage's stylesheet -->
+    <link rel="stylesheet" href="/style.css" />
+
+    <!-- Import the webpage's javascript file -->
+    <script src="/script.js" defer></script>
+  </head>
+  <body>
+    Popup will auto close in less than 2s.
+  </body>
+    <script>
+        let messageReceived = false;
+        window.addEventListener("message", (event) => {
+            log("Popup: Message received. (Before load handler.)", "success");
+            messageReceived = true;
+       
+        }, false);
+        
+    window.addEventListener("load", async () => {
+        log("Popup:  loaded.");
+        window.addEventListener("message", (event) => {
+            log("Popup: Message received. (After load handler.)", "success");
+            messageReceived = true;
+            
+            window.document.documentElement.requestFullscreen();
+
+           
+        });
+        setTimeout(()=>{
+          if (!messageReceived)
+            log("Popup: No message received after timeout.", "danger");
+
+            log("Popup: auto-closing.");
+            window.close();
+        },2000);
+      
+    }, false);
+  </script>
+</html>

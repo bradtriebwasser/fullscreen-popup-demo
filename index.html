@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="icon" href="https://glitch.com/favicon.ico" />
+
+    <title>Hello World!</title>
+    <!-- Import the webpage's stylesheet -->
+    <link rel="stylesheet" href="/style.css" />
+
+    <!-- Import the webpage's javascript file -->
+    <script src="/script.js" defer></script>
+</head>
+
+<body>
+    <div>
+        <h2>Popup postMessage demo</h2>
+        <p>The purpose of this page is to demonstrate multiple ways to send a message (postMessage) to a newly
+            created popup window. The popup window registers <strong>two</strong> message handlers; One immediately
+            and another after the page is loaded. This demonstration shows which handlers are executed in each example.
+        </p>
+        <input type="checkbox" id="addFullscreenDelegation">
+        <label for="vehicle3">Add Fullscreen capability delegation</label>
+        <input type="checkbox" id="popupOnOtherScreen">
+        <label for="vehicle3">Popup on other screen</label>
+    </div>
+    <div>
+        <strong>Example 1</strong> <button id="openPopupBeforeLoad">Start Example 1</button>
+        <p>Opens a popup window and immediately calls postMessage.</p>
+    </div>
+    <div>
+        <strong>Example 2</strong> <button id="openPopupAfterLoadWait">Start Example 2</button>
+        <p>Opens a popup window and registers an onLoad handler in this (parent) window. calls postMessage after the
+            popup is loaded.</p>
+    </div>
+
+    <h4>Log</h4>
+    <ul id="log"></ul>
+</body>
+<script>
+    "use strict";
+
+    const popupOptions = async () => {
+        if (!popupOnOtherScreen.checked) return "popup";
+        const screenDetails= await getScreenDetails().catch(e =>{ console.error(e); return null; });
+            const otherScreen = screenDetails.screens.find(s => s !== screenDetails.currentScreen);
+        var options =  `left=${otherScreen.availLeft},`+
+                `top=${otherScreen.availTop},`+
+                `width=${otherScreen.availWidth},`+
+                `height=${otherScreen.availHeight}`;
+                log(options);
+                return options;
+    }
+    window.addEventListener("load", async () => {
+        log("Page Loaded. Click a button to test.");
+
+        openPopupBeforeLoad.addEventListener("click", async (e) => {
+            log("'" + e.target.innerText + "' button clicked.");
+            var newWindow = window.open("/popup.html", '_blank', await popupOptions());
+            log("Window created. sending postMessage('test_message').");
+            newWindow.postMessage("test_message",
+                { targetOrigin: window.location.origin, delegate: addFullscreenDelegation.checked ? 'fullscreen' : undefined });
+        });
+
+        openPopupAfterLoadWait.addEventListener("click", async (e) => {
+            log("'" + e.target.innerText + "' button clicked.");
+            var newWindow = window.open("/popup.html", '_blank', await popupOptions());
+            const windowLoadFunction = async () => {
+                log("Window loaded. Sending postMessage('test_message').");
+                newWindow.postMessage("test_message",
+                    { targetOrigin: window.location.origin, delegate: addFullscreenDelegation.checked ? 'fullscreen' : undefined });
+                newWindow.window.removeEventListener("load", windowLoadFunction);
+            }
+            log("Window created. Registering onLoad function");
+            newWindow.addEventListener("load", windowLoadFunction);
+
+        });
+    });
+</script>
+
+</html>
