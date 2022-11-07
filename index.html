@@ -63,24 +63,6 @@
                 { targetOrigin: window.location.origin, delegate: addFullscreenDelegation.checked ? 'fullscreen' : undefined });
         });
 
-// JS in opener: 
-openPopup.addEventListener("click", async (e) => { // User Activation Required.
-    var popup = window.open("popup.html", '_blank', 'popup');
-    const onPopupLoad = async () => {
-        popup.postMessage("fullscreen_message",
-            { targetOrigin: window.location.origin, delegate: 'fullscreen' });
-            /* Without Proposal: DOMException: Failed to execute 'postMessage' on
-            'Window': Delegation is not allowed without transient
-            user activation.*/
-            popup.window.removeEventListener("load", popup);
-    };
-    popup.addEventListener("load", onPopupLoad);
-});
-// JS in popup:
-window.addEventListener("message", async (event) => {
-    if (event.data=="fullscreen_message")
-        await window.document.documentElement.requestFullscreen();
-});
         window.addEventListener("load", async () => {
             window.addEventListener("message", async (event) => {
                 await window.document.documentElement.requestFullscreen();
