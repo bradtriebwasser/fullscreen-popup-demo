@@ -58,7 +58,7 @@
 
         openPopupBeforeLoad.addEventListener("click", async (e) => {
             log("'" + e.target.innerText + "' button clicked.");
-            var newWindow = window.open("/popup.html", '_blank', await popupOptions());
+            var newWindow = window.open("popup.html", '_blank', await popupOptions());
             log("Window created. sending postMessage('test_message').");
             newWindow.postMessage("test_message",
                 { targetOrigin: window.location.origin, delegate: addFullscreenDelegation.checked ? 'fullscreen' : undefined });
@@ -66,7 +66,7 @@
 
         openPopupAfterLoadWait.addEventListener("click", async (e) => {
             log("'" + e.target.innerText + "' button clicked.");
-            var newWindow = window.open("/popup.html", '_blank', await popupOptions());
+            var newWindow = window.open("popup.html", '_blank', await popupOptions());
             const windowLoadFunction = async () => {
                 log("Window loaded. Sending postMessage('test_message').");
                 newWindow.postMessage("test_message",
